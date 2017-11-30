@@ -26,6 +26,7 @@ function snakes.new(x, y)
                 newHead = #self
             end
         end
+        self.lastHeading = {self.heading[1], self.heading[2]}
         self[newHead] = {s:nextPos()}
         self.head = newHead
     end

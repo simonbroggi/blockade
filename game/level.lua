@@ -122,9 +122,9 @@ function level.new(width, height)
     end
 
     inst:addBox(1,1,width-1,height-1)
-    inst.roomX = 24
+    inst.roomX = 20
     inst.roomY = 16
-    inst.roomWidth = 16
+    inst.roomWidth = 24
     inst.roomHeight = 16
     inst:addBox(inst.roomX, inst.roomY, inst.roomWidth, inst.roomHeight)
     inst.theDoor = inst:addDoor(inst.roomX, inst.roomY,0,1,6)

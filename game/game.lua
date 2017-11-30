@@ -49,13 +49,21 @@ function game.new()
         end
 
         if love.keyboard.isDown("up") then
-            self.snake.heading = {0, -1}
+            if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == 1) then
+                self.snake.heading = {0, -1}
+            end
         elseif love.keyboard.isDown("down") then
-            self.snake.heading = {0, 1}
+            if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == -1) then
+                self.snake.heading = {0, 1}
+            end
         elseif love.keyboard.isDown("left") then
-            self.snake.heading = {-1, 0}
+            if not(self.snake.lastHeading[1] == 1 and self.snake.lastHeading[2] == 0) then
+                self.snake.heading = {-1, 0}
+            end
         elseif love.keyboard.isDown("right") then
-            self.snake.heading = {1, 0}
+            if not(self.snake.lastHeading[1] == -1 and self.snake.lastHeading[2] == 0) then
+                self.snake.heading = {1, 0}
+            end
         end
         
         if self.tickCount <= 0 then
