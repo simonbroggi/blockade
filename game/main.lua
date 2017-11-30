@@ -9,7 +9,8 @@ cellWidth = 16
 cellHeight = 16
 
 function love.load()
-    --love.window.setFullscreen(true)
+    -- love.window.setFullscreen(true, "exclusive")
+    -- love.mouse.setVisible(false)
     currentGame = game.new()
 end
 
@@ -25,7 +26,7 @@ function love.update(dt)
     
     currentGame:update(dt)
 
-    if currentGame.gameOver then
+    if currentGame.gameOver or currentGame.gameWon then
         if love.keyboard.isDown("space") then
             currentGame = game.new()
         end

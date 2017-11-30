@@ -1,5 +1,7 @@
 local snakes = {}
-
+local denver = require 'denver'
+local cutSound = denver.get({waveform='pinknoise', frequency=1550, length=.2})
+love.audio.play(cutSound)
 function snakes.new(x, y)
     local s = {}
     table.insert(snakes, s)
@@ -39,6 +41,54 @@ function snakes.new(x, y)
                 return true
             end
         end
+    end
+    function s:cut(x, y)
+        if self[self.head][1] == x and self[self.head][2] == y then
+            self.dead = true
+            return false --cut the head -> dead
+        end
+        local n = 1
+        local startCutIndex = false
+        local startCut = false
+        local removeElements = {}
+        local removeBeforeHead = 0
+        for i=2, #self do
+            local e = self:getElementIndex(i)
+            if startCut or (self[e][1]== x and self[e][2]==y) then
+                table.insert(removeElements, e)
+                if e < self.head then
+                    removeBeforeHead = removeBeforeHead+1
+                end
+                if startCut == false then
+                    startCut = true
+                    love.audio.play(cutSound)
+                end
+            end
+        end
+        if #removeElements > 0 then
+            table.sort(removeElements)
+            -- print("head: "..self.head .. "  snakeLength:"..#self)
+            -- print("delete ", unpack(removeElements))
+            -- print("removeBeforeHead: "..removeBeforeHead)
+            self.head = self.head - removeBeforeHead
+            
+            for i=#removeElements, 1, -1 do
+                table.remove(self, removeElements[i])
+                --print("snake: "..unpack(self))
+            end
+            -- print("newHead: "..self.head .. " newSnakeLen:"..#self)
+        end
+        return true
+    end
+    function s:getElementIndex(n)
+        if n > #self then print("error") return end
+        local index = self.head + n -1
+        --print(self.head.."  the "..n.."th element is at array index "..index)
+        if index > #self then
+            index = index - #self
+        end
+        --print("now the "..n.."th element is at array index "..index)
+        return index
     end
 
     function s:draw(alpha)
