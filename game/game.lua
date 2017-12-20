@@ -21,6 +21,9 @@ function game.new()
     --local PlayerSnake = Snake(Vector2(10,30),Vector2(0,1), 7)
 
     inst.snake = snakes.new(30, 24)
+    inst.snake.lastHeading = {}
+    inst.snake.lastHeading[1] = inst.snake.heading[1]
+    inst.snake.lastHeading[2] = inst.snake.heading[2]
     inst.level.snakes = {inst.snake}
 
     function inst:draw()
