@@ -2,6 +2,12 @@ local game = {}
 local level = require 'level'
 local snakes = require 'snakes'
 local denver = require 'denver'
+--local Snake = require 'Snake'
+--local Vector2 = require 'Vector2'
+
+local periphery = require('periphery')
+local GPIO = periphery.GPIO
+local gpio_left01 = GPIO(2, "in")
 
 function game.new()
     local inst = {}
@@ -11,6 +17,8 @@ function game.new()
     inst.snakeBlinkOn = true
     local eatSound = denver.get({waveform='pinknoise', frequency=460, length=inst.tickLength*0.6})
     local crashSound = denver.get({waveform='pinknoise', frequency=300, length=inst.tickLength*3.3})
+
+    --local PlayerSnake = Snake(Vector2(10,30),Vector2(0,1), 7)
 
     inst.snake = snakes.new(30, 24)
     inst.level.snakes = {inst.snake}
@@ -22,11 +30,12 @@ function game.new()
         else
             self.snake:draw(100)
         end
+        --PlayerSnake:draw()
     end
 
     function inst:update(dt)
         self.tickCount = self.tickCount - dt
-        
+        --PlayerSnake:update(dt)
         if self.gameWon then
             if self.tickCount <= 0 then
                 self.tickCount = self.tickLength*2
@@ -56,7 +65,7 @@ function game.new()
             if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == -1) then
                 self.snake.heading = {0, 1}
             end
-        elseif love.keyboard.isDown("left") then
+        elseif love.keyboard.isDown("left") or ~gpio_left01:read() then
             if not(self.snake.lastHeading[1] == 1 and self.snake.lastHeading[2] == 0) then
                 self.snake.heading = {-1, 0}
             end
