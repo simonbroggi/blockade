@@ -65,7 +65,7 @@ function game.new()
             if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == -1) then
                 self.snake.heading = {0, 1}
             end
-        elseif love.keyboard.isDown("left") or ~gpio_left01:read() then
+        elseif love.keyboard.isDown("left") or gpio_left01:read() == false then
             if not(self.snake.lastHeading[1] == 1 and self.snake.lastHeading[2] == 0) then
                 self.snake.heading = {-1, 0}
             end
