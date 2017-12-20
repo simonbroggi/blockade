@@ -8,6 +8,9 @@ local denver = require 'denver'
 local periphery = require('periphery')
 local GPIO = periphery.GPIO
 local gpio_left01 = GPIO(3, "in")
+local gpio_right01 = GPIO(4, "in")
+local gpio_up01 = GPIO(14, "in")
+local gpio_down01 = GPIO(15, "in")
 
 function game.new()
     local inst = {}
@@ -60,11 +63,11 @@ function game.new()
             self.level:update(dt)
         end
 
-        if love.keyboard.isDown("up") then
+        if love.keyboard.isDown("up") or (gpio_up01:read() == false) then
             if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == 1) then
                 self.snake.heading = {0, -1}
             end
-        elseif love.keyboard.isDown("down") then
+        elseif love.keyboard.isDown("down") or (gpio_down01:read() == false) then
             if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == -1) then
                 self.snake.heading = {0, 1}
             end
@@ -72,7 +75,7 @@ function game.new()
             if not(self.snake.lastHeading[1] == 1 and self.snake.lastHeading[2] == 0) then
                 self.snake.heading = {-1, 0}
             end
-        elseif love.keyboard.isDown("right") then
+        elseif love.keyboard.isDown("right") or (gpio_right01:read() == false) then
             if not(self.snake.lastHeading[1] == -1 and self.snake.lastHeading[2] == 0) then
                 self.snake.heading = {1, 0}
             end
