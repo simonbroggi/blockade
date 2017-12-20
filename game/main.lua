@@ -29,9 +29,9 @@ function love.draw()
     end
     love.graphics.setColor(255,255,255,255)
     if gpio_button01:read() then
-      love.graphics.print("button", love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
+      love.graphics.print("button", love.graphics.getWidth()/4, love.graphics.getHeight()/5, 0, 2, 2)
     else
-      love.graphics.print("nop", love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
+      love.graphics.print("nop", love.graphics.getWidth()/4, love.graphics.getHeight()/5, 0, 2, 2)
     end
 end
 
