@@ -27,6 +27,12 @@ function love.draw()
         love.graphics.print("Space to restart", love.graphics.getWidth()/3, love.graphics.getHeight()*3/4, 0, 2, 2)
         love.graphics.print("get the pink square!", love.graphics.getWidth()*2/3, love.graphics.getHeight()*1/6, 0, 2, 2)
     end
+    love.graphics.setColor(255,255,255,255)
+    if gpio_button01:read() then
+      love.graphics.print("button", love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
+    else
+      love.graphics.print("nop", love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
+    end
 end
 
 function love.update(dt)
