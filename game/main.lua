@@ -5,6 +5,11 @@
 -- https://www.lua.org/pil/contents.html
 
 game = require "game"
+
+local periphery = require('periphery')
+local GPIO = periphery.GPIO
+local gpio_button01 = GPIO(2, "in")
+
 cellWidth = 16
 cellHeight = 16
 
@@ -34,7 +39,7 @@ function love.update(dt)
 
     if currentGame.gameOver or currentGame.gameWon then
 
-        if love.keyboard.isDown("space") then
+        if love.keyboard.isDown("space") or gpio_button01:read() then
             currentGame = game.new()
         end
     end
