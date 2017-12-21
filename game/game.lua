@@ -7,10 +7,10 @@ local denver = require 'denver'
 
 local periphery = require('periphery')
 local GPIO = periphery.GPIO
-local gpio_left01 = GPIO(3, "in")
-local gpio_right01 = GPIO(4, "in")
-local gpio_up01 = GPIO(14, "in")
-local gpio_down01 = GPIO(15, "in")
+local gpio_left01 = GPIO(15, "in")
+local gpio_right01 = GPIO(14, "in")
+local gpio_up01 = GPIO(3, "in")
+local gpio_down01 = GPIO(4, "in")
 
 function game.new()
     local inst = {}
