@@ -36,8 +36,8 @@ function game.new()
         else
             self.snake:draw(100)
         end
-        love.graphics.setColor(255, 255, 255, 255)
-        love.graphics.print("in: l" .. tostring(gpio_left01:read()) .. "  r" .. tostring(gpio_right01:read()) .. "  u" .. tostring(gpio_up01:read()) .. "  d" .. tostring(gpio_down01:read()), love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
+        --love.graphics.setColor(255, 255, 255, 255)
+        --love.graphics.print("in: l" .. tostring(gpio_left01:read()) .. "  r" .. tostring(gpio_right01:read()) .. "  u" .. tostring(gpio_up01:read()) .. "  d" .. tostring(gpio_down01:read()), love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
         --PlayerSnake:draw()
     end
 
