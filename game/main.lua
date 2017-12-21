@@ -45,7 +45,7 @@ function love.update(dt)
 
     if currentGame.gameOver or currentGame.gameWon then
 
-        if love.keyboard.isDown("space") or gpio_button01:read() then
+        if love.keyboard.isDown("space") or (gpio_button01:read()==false) then
             currentGame = game.new()
         end
     end
