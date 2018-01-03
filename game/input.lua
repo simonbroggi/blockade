@@ -115,7 +115,7 @@ function Input.update(dt)
     -- poll the GPIO edge events
     if GPIO then
         for _, binding in pairs(Input.bindingsPerKey) do
-            if binding.gpio:read() == false then
+            if binding.gpio:poll(0) == false then
                 binding.pressed = true
             end
         end
