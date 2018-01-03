@@ -4,5 +4,6 @@ function love.conf(t)
 	t.identity = "ch.insert-coin.snake"
     t.window.width = 1024
 	t.window.height = 768
+	--t.console = true
 	--t.window.highdpi = true
 end

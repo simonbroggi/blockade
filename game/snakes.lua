@@ -117,6 +117,27 @@ function snakes.new(x, y)
         -- end
     end
 
+    function s:up()
+        if not(self.lastHeading[1] == 0 and self.lastHeading[2] == 1) then
+            self.heading = {0, -1}
+        end
+    end
+    function s:down()
+        if not(self.lastHeading[1] == 0 and self.lastHeading[2] == -1) then
+            self.heading = {0, 1}
+        end
+    end
+    function s:left()
+        if not(self.lastHeading[1] == 1 and self.lastHeading[2] == 0) then
+            self.heading = {-1, 0}
+        end
+    end
+    function s:right()
+        if not(self.lastHeading[1] == -1 and self.lastHeading[2] == 0) then
+            self.heading = {1, 0}
+        end
+    end
+
     return s
 end
 

@@ -2,15 +2,6 @@ local game = {}
 local level = require 'level'
 local snakes = require 'snakes'
 local denver = require 'denver'
---local Snake = require 'Snake'
---local Vector2 = require 'Vector2'
-
-local periphery = require('periphery')
-local GPIO = periphery.GPIO
-local gpio_left01 = GPIO(15, "in")
-local gpio_right01 = GPIO(14, "in")
-local gpio_up01 = GPIO(3, "in")
-local gpio_down01 = GPIO(4, "in")
 
 function game.new()
     local inst = {}
@@ -27,14 +18,52 @@ function game.new()
     inst.snake.lastHeading = {}
     inst.snake.lastHeading[1] = inst.snake.heading[1]
     inst.snake.lastHeading[2] = inst.snake.heading[2]
-    inst.level.snakes = {inst.snake}
+
+    inst.snake2 = snakes.new(30, 33)
+    inst.snake2.lastHeading = {}
+    inst.snake2.lastHeading[1] = inst.snake2.heading[1]
+    inst.snake2.lastHeading[2] = inst.snake2.heading[2]
+
+    inst.level.snakes = {inst.snake, inst.snake2}
+
+    Input.p1_up:register(inst.snake.up, inst.snake)
+    Input.p1_down:register(inst.snake.down, inst.snake)
+    Input.p1_left:register(inst.snake.left, inst.snake)
+    Input.p1_right:register(inst.snake.right, inst.snake)
+    Input.p2_up:register(inst.snake2.up, inst.snake2)
+    Input.p2_down:register(inst.snake2.down, inst.snake2)
+    Input.p2_left:register(inst.snake2.left, inst.snake2)
+    Input.p2_right:register(inst.snake2.right, inst.snake2)
+
+    print("registered p1_up funcs:")
+    for k,v in pairs(Input.p1_up.funcs) do
+        for kk, vv in pairs(v) do
+            if vv then
+                print(tostring(k) .. " (self= " .. tostring(kk) .. " )")
+            end
+        end
+    end
+
+    -- remove callback
+    function inst:revoveCallbacks()
+        Input.p1_up:remove(inst.snake.up, inst.snake)
+        Input.p1_down:remove(inst.snake.down, inst.snake)
+        Input.p1_left:remove(inst.snake.left, inst.snake)
+        Input.p1_right:remove(inst.snake.right, inst.snake)
+        Input.p2_up:remove(inst.snake2.up, inst.snake2)
+        Input.p2_down:remove(inst.snake2.down, inst.snake2)
+        Input.p2_left:remove(inst.snake2.left, inst.snake2)
+        Input.p2_right:remove(inst.snake2.right, inst.snake2)
+    end
 
     function inst:draw()
         self.level:draw()
         if self.snakeBlinkOn then
             self.snake:draw(255)
+            self.snake2:draw(255)
         else
             self.snake:draw(100)
+            self.snake2:draw(100)
         end
         --love.graphics.setColor(255, 255, 255, 255)
         --love.graphics.print("in: l" .. tostring(gpio_left01:read()) .. "  r" .. tostring(gpio_right01:read()) .. "  u" .. tostring(gpio_up01:read()) .. "  d" .. tostring(gpio_down01:read()), love.graphics.getWidth()/3, love.graphics.getHeight()/5, 0, 2, 2)
@@ -64,33 +93,16 @@ function game.new()
         else
             self.level:update(dt)
         end
-
-        if love.keyboard.isDown("up") or (gpio_up01:read() == false) then
-            if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == 1) then
-                self.snake.heading = {0, -1}
-            end
-        elseif love.keyboard.isDown("down") or (gpio_down01:read() == false) then
-            if not(self.snake.lastHeading[1] == 0 and self.snake.lastHeading[2] == -1) then
-                self.snake.heading = {0, 1}
-            end
-        elseif love.keyboard.isDown("left") or (gpio_left01:read() == false) then
-            if not(self.snake.lastHeading[1] == 1 and self.snake.lastHeading[2] == 0) then
-                self.snake.heading = {-1, 0}
-            end
-        elseif love.keyboard.isDown("right") or (gpio_right01:read() == false) then
-            if not(self.snake.lastHeading[1] == -1 and self.snake.lastHeading[2] == 0) then
-                self.snake.heading = {1, 0}
-            end
-        end
         
         if self.tickCount <= 0 then
             self.tickCount = self.tickLength
 
             --print(self.snake:getElementIndex(1).." "..self.snake:getElementIndex(2).." "..self.snake:getElementIndex(3).." "..self.snake:getElementIndex(4))
-            if self.snake.dead then
+            if self.snake.dead or self.snake2.dead then
                 self.gameOver = true
                 love.audio.play(crashSound)
             else
+                self.snake2:move()
                 local nextPosX, nextPosY = self.snake:nextPos()
                 local nextElement = self.level:getElement(nextPosX, nextPosY)
                 if nextElement == "wall" or nextElement == "door" or self.snake:checkNextPosSelfCollision() then
