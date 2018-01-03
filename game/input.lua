@@ -79,7 +79,7 @@ local function newBinding(key_str, gpio_pin)
     b.key = key_str
     if GPIO then
         b.gpio = GPIO(gpio_pin, "in")
-        b.edge = "falling"
+        --b.edge = "falling"
     end
     b.funcs = {}
     b.register = register
@@ -116,7 +116,7 @@ function Input.update(dt)
     -- poll the GPIO edge events
     if GPIO then
         for _, binding in pairs(Input.bindingsPerKey) do
-            if binding.gpio:poll(0) then
+            if binding.gpio:read() == false then
                 binding.pressed = true
             end
         end

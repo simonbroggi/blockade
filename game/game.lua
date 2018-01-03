@@ -5,7 +5,7 @@ local denver = require 'denver'
 
 function game.new()
     local inst = {}
-    inst.tickLength = 0.1
+    inst.tickLength = 0.6
     inst.tickCount = inst.tickLength
     inst.level = level.new(64, 48)
     inst.snakeBlinkOn = true
