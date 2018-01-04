@@ -79,6 +79,7 @@ function Snake:checkCollision(x,y)
     end
     return false
 end
+
 function Snake:cutAtIndex(cutI)
     if cutI == self.headI then
         self.dead = true
@@ -96,34 +97,6 @@ function Snake:cutAtIndex(cutI)
         end
         self.headI = self.headI - removeBeforeHead
     end
-end
-function Snake:cutAtIndexxx(i)
-    print("CUTTING " .. " i:" .. i .."  headI:".. self.headI )
-    self:printPositions(true)
-    if i == self.headI then
-        self.dead = true
-        return
-    elseif i > self.headI then
-        for j=i, self:len() do
-            self.positions[j*2-1] = nil
-            self.positions[j*2] = nil
-        end
-    else
-        local removeBeforeHead = self.headI - i
-        --local removeAfterHead = 
-        
-        for j=1, removeBeforeHead do
-            table.remove(self.positions, i*2-1)
-            table.remove(self.positions, i*2-1)
-            --print("     "..j)
-        end
-        --todo
-        self.headI = self.headI - removeBeforeHead
-        --self:printPositions()
-
-        print("removeBeforeHead: " .. removeBeforeHead .. "  headI:"..self.headI)
-    end
-    self:printPositions(true)
 end
 
 function Snake:headPos()
