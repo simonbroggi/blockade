@@ -1,10 +1,10 @@
 local vector = require("vector")
 local denver = require("denver")
 
-Snake = {}
-Snake.tick = 0.5
+local Snake = {}
+Snake.tick = 0.1
 Snake.moveSound  = denver.get({waveform='pinknoise', frequency=900, length=0.04})
-Snake.crashSound = denver.get({waveform='pinknoise', frequency=300, length=1.8})
+Snake.crashSound = denver.get({waveform='pinknoise', frequency=300, length=.7})
 
 function Snake:new(x, y, len)
     local headingX, headingY = vector.right()
@@ -28,18 +28,35 @@ function Snake:new(x, y, len)
     return inst
 end
 
+function Snake:setLevel(level)
+    self.level = level
+    for i=1, self:len() do
+        local x, y = self.positions[i*2-1], self.positions[i*2]
+        local p = self.level:getP(x, y)
+        if p.body:isActive() or p.go then
+            print("initializing snake over level conflict!!")
+        end
+        p.go = self
+        p.body:setActive(true)
+    end
+end
+
 function Snake:update(dt)
     self.timeSinceTick = self.timeSinceTick + dt
     if self.timeSinceTick >= self.tick then
         self.timeSinceTick = self.timeSinceTick - self.tick
-        self:move(self.foodEaten)
-        self.foodEaten = false
-        self.moved = true
-        love.audio.play(self.moveSound)
+        if self.dead then
+
+        else
+            self:move(self.foodEaten)
+            self.foodEaten = false
+            self.moved = true
+        end
     end
 end
 
-function Snake:draw()
+function Snake:draw(cellWidth, cellHeight)
+    love.graphics.setColor(222, 222, 222, 255)
     for i=self.headI, self:len() do
         love.graphics.rectangle("fill", self.positions[i*2-1] * cellWidth-1, self.positions[i*2] * cellHeight-1, 2-cellWidth, 2-cellHeight)
         --n = n+1
@@ -56,6 +73,27 @@ function Snake:move(grow)
     --self:printPositions()
     local nextHeadI = self.headI
     local x,y = self:headPos()
+    local nextX, nextY = x + self.headingX, y + self.headingY
+
+    if self.level then -- check collisions
+        if nextX <= 0 or nextY <= 0 or nextX >= self.level.width or nextY >= self.level.height then
+            print("out of level")
+            love.audio.play(self.crashSound)
+            self.dead = true
+            return
+        end
+        local p = self.level:getP(nextX, nextY)
+        if p.go then
+            print("collision!! or is it eatable??")
+            love.audio.play(self.crashSound)
+            self.dead = true
+            return
+        else
+            p.go = self
+            p.body:setActive(true)
+        end
+    end
+
     if grow then
         table.insert(self.positions, nextHeadI*2-1, x)
         table.insert(self.positions, nextHeadI*2,   y)
@@ -63,9 +101,17 @@ function Snake:move(grow)
         nextHeadI = self.headI - 1
         if nextHeadI < 1 then nextHeadI = self:len() end
     end
+    love.audio.play(self.moveSound)
     
     self.lastHeadingX, self.lastHeadingY = self.headingX, self.headingY
-    self.positions[nextHeadI*2-1], self.positions[nextHeadI*2] = x + self.headingX, y + self.headingY
+
+    if self.level and not grow then
+        local tailP = self.level:getP(self.positions[nextHeadI*2-1], self.positions[nextHeadI*2])
+        tailP.go = nil
+        tailP.body:setActive(false)
+    end
+
+    self.positions[nextHeadI*2-1], self.positions[nextHeadI*2] = nextX, nextY
     self.headI = nextHeadI
 end
 
@@ -109,10 +155,10 @@ function Snake:steer(x, y)
         self.headingX, self.headingY = x,y
     end
 end
-function Snake:steerLeft()      self:steer(vector.left())     end
-function Snake:steerRight()     self:steer(vector.right())    end
 function Snake:steerUp()        self:steer(vector.up())       end
 function Snake:steerDown()      self:steer(vector.down())     end
+function Snake:steerLeft()      self:steer(vector.left())     end
+function Snake:steerRight()     self:steer(vector.right())    end
 
 
 function Snake:initPositions(x, y, len)
