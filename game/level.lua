@@ -51,11 +51,15 @@ function Level:load(data)
         self.world = love.physics.newWorld(0, 0, false)
         self:createPGrid()
 
-        -- door
+        -- doors
         local downx, downy = vector.down()
-        local door = Door:new(20, 3, 4, downx, downy)
+        local door = Door:new(20, 1, 14, downx, downy)
         door:setLevel(self)
         table.insert(self.levelObjects, door)
+        door = Door:new(10, 1, 5, downx, downy)
+        door:setLevel(self)
+        table.insert(self.levelObjects,door)
+
 
         -- laser
         local laser = Laser:new(1,1,-1,-1)
