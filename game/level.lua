@@ -1,6 +1,7 @@
 local vector = require("vector")
 local Door = require("door")
 local Laser = require("laser")
+local FruitManager = require("fruitManager")
 
 local Level = {}
 
@@ -24,16 +25,16 @@ function Level:draw(cellWidth, cellHeight)
     for i, o in ipairs(self.levelObjects) do
         o:draw(cellWidth, cellHeight)
     end
-    local occupied = ""
-    for y=1, self.height do
-        for x=1, self.width do
-            local p = self:getP(x, y)
-            if p.go then
-                occupied = occupied..tostring(x).."/"..tostring(y).."  "
-            end
-        end
-    end
-    love.graphics.print(occupied, 0, love.graphics.getHeight()*4/6, 0, 2, 2)
+    -- local occupied = ""
+    -- for y=1, self.height do
+    --     for x=1, self.width do
+    --         local p = self:getP(x, y)
+    --         if p.go then
+    --             occupied = occupied..tostring(x).."/"..tostring(y).."  "
+    --         end
+    --     end
+    -- end
+    -- love.graphics.print(occupied, 0, love.graphics.getHeight()*4/6, 0, 2, 2)
 end
 
 function Level:load(data)
@@ -53,22 +54,36 @@ function Level:load(data)
 
         -- doors
         local downx, downy = vector.down()
-        local door = Door:new(20, 1, 14, downx, downy)
+        local door = Door:new(30, 1, 14, downx, downy)
         door:setLevel(self)
         table.insert(self.levelObjects, door)
-        door = Door:new(10, 1, 5, downx, downy)
+        door = Door:new(10, 1, 20, vector.right())
         door:setLevel(self)
         table.insert(self.levelObjects,door)
 
 
         -- laser
-        local laser = Laser:new(1,1,-1,-1)
+        local laser = Laser:new(1,1,1000,1000)
         laser:setLevel(self)
         table.insert(self.levelObjects, laser)
 
+        -- fruit 
+        local fruitManager = FruitManager:new()
+        fruitManager:setLevel(self)
+        table.insert(self.levelObjects, fruitManager)
+
+        fruitManager:spawn()
+        fruitManager:spawn()
+        fruitManager:spawn()
+        fruitManager:spawn()
+        fruitManager:spawn()
     end
 end
 
+
+-- create grid of static bodies and disable them. Bodies get enabled when something is on them.
+-- todo: create static bodies for static stuff, and kinematic ones that move,
+-- instead of the static enable disable thing..
 function Level:createPGrid()
     self.pGrid = {}
     local cellWidth, cellHeight = game.cellWidth, game.cellHeight
@@ -83,8 +98,7 @@ function Level:createPGrid()
             self:setP(x, y, p)
         end
     end
-    print("world with " .. self.world:getBodyCount() .. " bodies created") --to much? probably!
-    -- todo: create static bodies for static stuff, and kinematic ones..
+    print("world with " .. self.world:getBodyCount() .. " bodies created") --to much? probably
 end
 
 function Level:getP(x, y)

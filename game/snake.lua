@@ -1,5 +1,6 @@
 local vector = require("vector")
 local denver = require("denver")
+local FruitManager = require("fruitManager")
 
 local Snake = {}
 Snake.tick = 0.1
@@ -84,10 +85,17 @@ function Snake:move(grow)
         end
         local p = self.level:getP(nextX, nextY)
         if p.go then
-            print("collision!! or is it eatable??")
-            love.audio.play(self.crashSound)
-            self.dead = true
-            return
+            if getmetatable(p.go) == FruitManager then
+               print("edible!!")
+               grow = true
+               p.go:spawn()
+               p.go:remove(nextX, nextY)
+            else
+                print("collision!! or is it eatable??")
+                love.audio.play(self.crashSound)
+                self.dead = true
+                return
+            end
         else
             p.go = self
             p.body:setActive(true)

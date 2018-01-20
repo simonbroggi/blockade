@@ -7,6 +7,33 @@ local particleImageData = love.image.newImageData(1,1)
 particleImageData:setPixel(0,0,200,0,0,255)
 Laser.particleImage = love.graphics.newImage(particleImageData)
 
+-- tried texturing a line, but I think uvs are not set for the line :-(
+-- local lineTextureImageData = love.image.newImageData(1,5)
+-- local one,two,three = 50,100,255
+-- lineTextureImageData:setPixel(0,0,one,one,one,255)
+-- lineTextureImageData:setPixel(0,1,two,two,two,255)
+-- lineTextureImageData:setPixel(0,2,three,three,three,255)
+-- lineTextureImageData:setPixel(0,3,two,two,two,255)
+-- lineTextureImageData:setPixel(0,4,one,one,one,255)
+-- Laser.lineTextureImage = love.graphics.newImage(lineTextureImageData)
+-- local pixelcode = [[
+--     extern Image gradient;  
+--     vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+--     {
+--         vec4 texturecolor = texture2D(gradient, texture_coords);
+--         return texturecolor * color;
+--     }
+-- ]]
+-- local vertexcode = [[
+--     vec4 position(mat4 transform_projection, vec4 vertex_position)
+--     {
+--         // The order of operations matters when doing matrix multiplication.
+--         return transform_projection * vertex_position;
+--     }
+-- ]]
+-- Laser.lineShader = love.graphics.newShader(pixelcode, vertexcode)
+-- Laser.lineShader:send("gradient", Laser.lineTextureImage)
+
 function Laser:new(x, y, dirX, dirY)
     local inst = {
         x = x,
@@ -32,7 +59,7 @@ function Laser:loadParticleSystems()
         ps:setSpeed(60,170)
         ps:setSpread(math.pi*0.8)
         ps:setSizes(3,3,3,3)
-        ps:setColors(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0) -- Fade to transparency.
+        ps:setColors(255,255,255,255, 255,255,255,255, 255,255,255,255, 255,255,255,0) -- Fade to transparency.
         ps:stop()
         self.particleSystems[i] = ps
     end
@@ -53,12 +80,14 @@ function Laser:update(dt)
         for i=1, #self.segmentList do
             self.segmentList[i] = nil
         end
-        local startX,startY = self.x*game.cellWidth,self.y*game.cellHeight
+        
+        -- start on the horizontal right and vertical center of the cell
+        local startX,startY = self.x*game.cellWidth ,self.y*game.cellHeight - game.cellHeight/2
         self.segmentList[1] = {
             startX=startX,
             startY=startY,
-            dirX=love.mouse.getX()-startX,
-            dirY=love.mouse.getY()-startY,
+            dirX=self.dirX,
+            dirY=self.dirY,
             fraction=1
         }
         
@@ -118,14 +147,32 @@ end
 function Laser:draw()
     -- draw it according to points found in update
     love.graphics.setBlendMode("add")
-    love.graphics.setLineWidth(3)
     love.graphics.setColor(200,0,0,255)
     for i,p in ipairs(self.particleSystems) do
         love.graphics.draw(p)
     end
+
+    -- set line points. should probably do this in update
+    local linePoints = {}
+    table.insert(linePoints, self.segmentList[1].startX)
+    table.insert(linePoints, self.segmentList[1].startY)
     for i,s in ipairs(self.segmentList) do
-        love.graphics.line(s.startX,s.startY, s.startX+s.dirX,s.startY+s.dirY)
+        table.insert(linePoints, s.startX+s.dirX)
+        table.insert(linePoints, s.startY+s.dirY)
     end
+
+    -- trying set shader to add a texture to the line instead of drawing twice..
+    -- local s = love.graphics.getShader()
+    -- love.graphics.setShader(self.lineShader)
+    love.graphics.setLineJoin("bevel")
+    love.graphics.setLineWidth(13)
+    love.graphics.setColor(80,0,0,255)
+    love.graphics.line(unpack(linePoints))
+    -- love.graphics.setShader(s)
+
+    love.graphics.setLineWidth(1)
+    love.graphics.setColor(155,0,0,255)
+    love.graphics.line(unpack(linePoints))    
 end
 
 return Laser

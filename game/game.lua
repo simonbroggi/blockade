@@ -20,7 +20,7 @@ function Game:loadSinglePlayer()
     level:load()
     self:setLevel(level)
 
-    self.player1 = Snake:new(17,10,8)
+    self.player1 = Snake:new(9,10,8)
     self.player1:setLevel(level)
     table.insert(self.snakes, self.player1)
 
