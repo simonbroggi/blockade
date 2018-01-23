@@ -45,7 +45,7 @@ function Door:update(dt)
 
             -- calculate the new coordinates that the door now occupies
             local cx,cy = self.x, self.y 
-            cx,cy = cx+self.currentLen*self.headingX, cy+self.currentLen*self.headingY
+            cx,cy = cx+(self.currentLen-1)*self.headingX, cy+(self.currentLen-1)*self.headingY
             
             if self.level then
                 p = self.level:getP(cx, cy)
@@ -63,7 +63,7 @@ function Door:update(dt)
 
             -- calculate the coordinates that the door no longer occupies
             local cx,cy = self.x, self.y 
-            cx,cy = cx+self.currentLen*self.headingX, cy+self.currentLen*self.headingY
+            cx,cy = cx+(self.currentLen-1)*self.headingX, cy+(self.currentLen-1)*self.headingY
                         
             self.currentLen = self.currentLen - 1
             love.audio.play(self.moveSound)

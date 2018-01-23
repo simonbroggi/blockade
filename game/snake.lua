@@ -116,6 +116,12 @@ function Snake:move(grow)
             -- fill the cell
             p.go[self] = true
             p.body:setActive(true)
+
+            for gameObject in pairs(p.go) do
+                if gameObject.press then
+                    gameObject:press(self)
+                end
+            end
         end
     end
 
@@ -133,8 +139,13 @@ function Snake:move(grow)
     if self.level and not grow then
         local p = self.level:getP(self.positions[nextHeadI*2-1], self.positions[nextHeadI*2])
         p.go[self] = nil
-        -- todo: check if theres another thing in the p.go list and keep body active if yes
         p.body:setActive(false)
+        
+        for gameObject in pairs(p.go) do
+            if gameObject.release then
+                gameObject:release(self)
+            end
+        end
     end
 
     self.positions[nextHeadI*2-1], self.positions[nextHeadI*2] = nextX, nextY
@@ -165,12 +176,22 @@ function Snake:cutAtIndex(cutI)
         return
     elseif cutI > self.headI then -- cut on the right of head
         for i=cutI, self:len() do
+            local x,y = self.positions[i*2-1], self.positions[i*2]
+            local p = self.level:getP(x,y)
+            p.go[self] = nil
+            p.body:setActive(false)
+
             self.positions[i*2-1] = nil
             self.positions[i*2] = nil
         end
     else -- cut on the left requires change of headI and shifting positions
         local removeBeforeHead = self.headI - cutI
         for i=1, removeBeforeHead do
+            local x,y = self.positions[cutI*2-1], self.positions[cutI*2]
+            local p = self.level:getP(x,y)
+            p.go[self] = nil
+            p.body:setActive(false)
+            
             table.remove(self.positions, cutI*2-1)
             table.remove(self.positions, cutI*2-1)
         end

@@ -1,5 +1,6 @@
 local vector = require("vector")
 local Door = require("door")
+local Switch = require("switch")
 local Laser = require("laser")
 local FruitManager = require("fruitManager")
 
@@ -61,6 +62,16 @@ function Level:load(data)
         door:setLevel(self)
         table.insert(self.levelObjects,door)
 
+        --switch
+        local switch = Switch:new(10, 5)
+        switch:setLevel(self)
+        table.insert(self.levelObjects, switch)
+        table.insert(switch.pressEvent, function()
+            door.close = false
+        end)
+        table.insert(switch.releaseEvent, function()
+            door.close = true
+        end)
 
         -- laser
         local laser = Laser:new(1,1,2000,2000)
