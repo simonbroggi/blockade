@@ -22,12 +22,12 @@ end
 -- don't spawn fruit on walls, snakes etc.
 -- check level:getP(x, y) if there's something there
 function FruitManager:spawn()
-    local x = math.random(self.level.width-1)
-    local y = math.random(self.level.height-1)
+    local x = math.random(self.level.width)
+    local y = math.random(self.level.height)
     local p = self.level:getP(x,y)
     while p.body:isActive() do
-        x = math.random(self.level.width-1)
-        y = math.random(self.level.height-1)
+        x = math.random(self.level.width)
+        y = math.random(self.level.height)
         p = self.level:getP(x,y)
     end
     table.insert(self.positions, x)

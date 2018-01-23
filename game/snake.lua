@@ -77,12 +77,18 @@ function Snake:move(grow)
     local nextX, nextY = x + self.headingX, y + self.headingY
 
     if self.level then -- check collisions
-        if nextX <= 0 or nextY <= 0 or nextX >= self.level.width or nextY >= self.level.height then
-            print("out of level")
-            love.audio.play(self.crashSound)
-            self.dead = true
-            return
+
+        -- out of level checks
+        if nextX <=0 then
+            nextX = nextX+self.level.width
+        elseif nextX > self.level.width then
+            nextX = nextX-self.level.width
+        elseif nextY <=0 then
+            nextY = nextY+self.level.height
+        elseif nextY > self.level.height then
+            nextY = nextY-self.level.height
         end
+
         local p = self.level:getP(nextX, nextY)
         if p.go then
             if getmetatable(p.go) == FruitManager then
