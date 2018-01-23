@@ -19,6 +19,10 @@ function Snake:new(x, y, len)
         foodEaten = false,
         moved = false, -- true if the snake has moved this frame
         dead = false,
+        colorR = 222,
+        colorG = 222,
+        colorB = 222,
+        colorA = 255,
         positions = {} -- odd:x even:y
     }
     self.__index = self
@@ -46,8 +50,12 @@ function Snake:update(dt)
     self.timeSinceTick = self.timeSinceTick + dt
     if self.timeSinceTick >= self.tick then
         self.timeSinceTick = self.timeSinceTick - self.tick
-        if self.dead then
-
+        if self.dead then  -- blink
+            if self.colorA == 255 then
+                self.colorA = 100
+            else
+                self.colorA = 255
+            end
         else
             self:move(self.foodEaten)
             self.foodEaten = false
@@ -57,7 +65,7 @@ function Snake:update(dt)
 end
 
 function Snake:draw(cellWidth, cellHeight)
-    love.graphics.setColor(222, 222, 222, 255)
+    love.graphics.setColor(self.colorR, self.colorG, self.colorB, self.colorA)
     for i=self.headI, self:len() do
         love.graphics.rectangle("fill", self.positions[i*2-1] * cellWidth-1, self.positions[i*2] * cellHeight-1, 2-cellWidth, 2-cellHeight)
         --n = n+1
@@ -98,8 +106,7 @@ function Snake:move(grow)
                p.go:remove(nextX, nextY)
             else
                 print("collision!! or is it eatable??")
-                love.audio.play(self.crashSound)
-                self.dead = true
+                self:die()
                 return
             end
         else
@@ -140,9 +147,16 @@ function Snake:checkCollision(x,y)
     return false
 end
 
+function Snake:die()
+    self.dead = true
+    self.tick = self.tick * 2
+    self.colorA = 100
+    love.audio.play(self.crashSound)
+end
+
 function Snake:cutAtIndex(cutI)
     if cutI == self.headI then
-        self.dead = true
+        self:die()
         return
     elseif cutI > self.headI then -- cut on the right of head
         for i=cutI, self:len() do

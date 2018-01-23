@@ -21,6 +21,9 @@ function Game:loadSinglePlayer()
     self:setLevel(level)
 
     self.player1 = Snake:new(9,10,5)
+    self.player1.colorR = 180
+    self.player1.colorG = 255
+    self.player1.colorB = 255
     self.player1:setLevel(level)
     table.insert(self.snakes, self.player1)
 
@@ -44,6 +47,9 @@ function Game:loadTwoPlayer()
     self:loadSinglePlayer()
 
     self.player2 = Snake:new(9,20,5)
+    self.player2.colorR = 255
+    self.player2.colorG = 180
+    self.player2.colorB = 255
     self.player2:setLevel(self.level)
     table.insert(self.snakes, self.player2)
 
