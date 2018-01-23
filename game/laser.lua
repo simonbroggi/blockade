@@ -2,7 +2,7 @@ local vector = require("vector")
 
 local Laser = {}
 Laser.tick = 0.05
-Laser.maxDeflections = 6
+Laser.maxDeflections = 12
 local particleImageData = love.image.newImageData(1,1)
 particleImageData:setPixel(0,0,200,0,0,255)
 Laser.particleImage = love.graphics.newImage(particleImageData)

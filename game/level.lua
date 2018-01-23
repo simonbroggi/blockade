@@ -63,7 +63,7 @@ function Level:load(data)
 
 
         -- laser
-        local laser = Laser:new(1,1,1000,1000)
+        local laser = Laser:new(1,1,2000,2000)
         laser:setLevel(self)
         table.insert(self.levelObjects, laser)
 
