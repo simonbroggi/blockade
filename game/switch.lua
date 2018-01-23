@@ -21,13 +21,11 @@ function Switch:setLevel(level)
 end
 
 function Switch:press(snake)
-    print("switch pressed:"..self.x.."/"..self.y)
     for _, func in pairs(self.pressEvent) do
         func()
     end
 end
 function Switch:release(snake)
-    print("switch released:"..self.x.."/"..self.y)
     for _, func in pairs(self.releaseEvent) do
         func()
     end

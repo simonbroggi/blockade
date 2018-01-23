@@ -3,8 +3,8 @@ Game = require ("game")
 
 function love.load()
     game = Game:new()
-    --game:loadSinglePlayer()
-    game:loadTwoPlayer()
+    game:loadSinglePlayer()
+    --game:loadTwoPlayer()
     love.graphics.setFont(love.graphics.newFont(6))
 end
 
