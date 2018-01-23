@@ -14,12 +14,24 @@ function Door:new(x, y, len, headingX, headingY)
         headingX = headingX,
         headingY = headingY,
         close = true,
-        timeSinceTick = 0
+        timeSinceTick = 0,
+        level = level
     }
     self.__index = self
     setmetatable(inst, self)
     
     return inst
+end
+
+function Door:setLevel(level)
+    self.level = level
+    local x,y = self.x, self.y
+    for i=1, self.currentLen do
+        local p = self.level:getP(x, y)
+        p.go[self] = true
+        p.body:setActive(true)
+        x,y = x+self.headingX, y+self.headingY
+    end
 end
 
 function Door:update(dt)
@@ -29,15 +41,54 @@ function Door:update(dt)
         if self.close and self.currentLen < self.maxLen then
             -- needs to close
             self.currentLen = self.currentLen + 1
-            -- todo: check if snake gets cut
+            love.audio.play(self.moveSound)
+
+            -- calculate the new coordinates that the door now occupies
+            local cx,cy = self.x, self.y 
+            cx,cy = cx+(self.currentLen-1)*self.headingX, cy+(self.currentLen-1)*self.headingY
+            
+            if self.level then
+                p = self.level:getP(cx, cy)
+                for gameObject in pairs(p.go) do
+                    -- assuming it's a snake
+                    local cutIndex = gameObject:checkCollision(cx, cy)
+                    gameObject:cutAtIndex(cutIndex)
+                end
+                p.go[self] = true
+                p.body:setActive(true)
+            end
+            return true
         elseif (not self.close) and self.currentLen > 1 then
             -- needs to open
+
+            -- calculate the coordinates that the door no longer occupies
+            local cx,cy = self.x, self.y 
+            cx,cy = cx+(self.currentLen-1)*self.headingX, cy+(self.currentLen-1)*self.headingY
+                        
             self.currentLen = self.currentLen - 1
+            love.audio.play(self.moveSound)
+
+            if self.level then
+                p = self.level:getP(cx, cy)
+                p.go[self] = nil
+                local otherObject = false
+                for gameObject in pairs(p.go) do
+                    if not gameObject.noPhysics then
+                        otherObject = true
+                        break
+                    end
+                end
+                if not otherObject then
+                    p.body:setActive(false)
+                end
+            end
+            return true
         end
     end
+    return false
 end
 
-function Door:draw()
+function Door:draw(cellWidth, cellHeight)
     love.graphics.setColor(170, 170, 0, 255)
     local x,y = self.x, self.y
     for i=1, self.currentLen do

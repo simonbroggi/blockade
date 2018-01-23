@@ -1,4 +1,4 @@
-local Input = {}
+local input = {}
 
 local function isModuleAvailable(name)
     if package.loaded[name] then
@@ -21,7 +21,7 @@ if isModuleAvailable('periphery') then
     GPIO = periphery.GPIO
 end
 
-Input.bindingsPerKey = {}
+input.bindingsPerKey = {}
 local function register(self, func, caller)
     if not self.funcs[func] then
         self.funcs[func] = {}
@@ -87,35 +87,35 @@ local function newBinding(key_str, gpio_pin)
     b.emit = emit
 
     b.pressed = false
-    if Input.bindingsPerKey[key_str] then
+    if input.bindingsPerKey[key_str] then
         print("Warning: " .. key_str .. " already defined! overwriting!!")
     end
-    Input.bindingsPerKey[key_str] = b
+    input.bindingsPerKey[key_str] = b
     return b
 end
 
-Input.p1_up         = newBinding("up", 3)
-Input.p1_down       = newBinding("down", 4)
-Input.p1_left       = newBinding("left", 15)
-Input.p1_right      = newBinding("right", 14)
-Input.p1_button1    = newBinding("space", 2)
+input.p1_up         = newBinding("up", 3)
+input.p1_down       = newBinding("down", 4)
+input.p1_left       = newBinding("left", 15)
+input.p1_right      = newBinding("right", 14)
+input.p1_button1    = newBinding("space", 2)
 
-Input.p2_up         = newBinding("w", 17)
-Input.p2_down       = newBinding("s", 18)
-Input.p2_left       = newBinding("a", 27)
-Input.p2_right      = newBinding("d", 22)
-Input.p2_button1    = newBinding("x", 23)
+input.p2_up         = newBinding("w", 17)
+input.p2_down       = newBinding("s", 18)
+input.p2_left       = newBinding("a", 27)
+input.p2_right      = newBinding("d", 22)
+input.p2_button1    = newBinding("x", 23)
 
 -- print("all bindings:")
--- for k, v in pairs(Input.bindingsPerKey) do
+-- for k, v in pairs(input.bindingsPerKey) do
 --     print(k)
 -- end
 
 -- called in love.update
-function Input.update(dt)
+function input.update(dt)
     -- poll the GPIO edge events
     if GPIO then
-        for _, binding in pairs(Input.bindingsPerKey) do
+        for _, binding in pairs(input.bindingsPerKey) do
             if binding.gpio:read() == false then
                 binding.pressed = true
             end
@@ -124,7 +124,7 @@ function Input.update(dt)
 
     -- emit functions that were pressed in the last frame, and set pressed to false
     
-    for _, binding in pairs(Input.bindingsPerKey) do
+    for _, binding in pairs(input.bindingsPerKey) do
         if binding.pressed then
             binding:emit()
             binding.pressed = false
@@ -133,13 +133,21 @@ function Input.update(dt)
 end
 
 -- called in love.keypressed
-function Input.keypressed(key)
-    if Input.bindingsPerKey[key] then
-        Input.bindingsPerKey[key].pressed = true
+function input.keypressed(key)
+    if input.bindingsPerKey[key] then
+        input.bindingsPerKey[key].pressed = true
+    end
+end
+
+function input.close()
+    if GPIO then
+        for _, binding in pairs(input.bindingsPerKey) do
+            binding.gpio:close()
+        end
     end
 end
 
 -- test
---Input.p1_button1:register(function() print("button1 pressed") end)
+--input.p1_button1:register(function() print("button1 pressed") end)
 
-return Input
+return input
