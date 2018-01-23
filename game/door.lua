@@ -28,7 +28,7 @@ function Door:setLevel(level)
     local x,y = self.x, self.y
     for i=1, self.currentLen do
         local p = self.level:getP(x, y)
-        p.go = self
+        p.go[self] = true
         p.body:setActive(true)
         x,y = x+self.headingX, y+self.headingY
     end
@@ -49,12 +49,12 @@ function Door:update(dt)
             
             if self.level then
                 p = self.level:getP(cx, cy)
-                if p.go then
-                    -- p.go
-                    local cutIndex = p.go:checkCollision(cx, cy)
-                    p.go:cutAtIndex(cutIndex)
+                for gameObject in pairs(p.go) do
+                    -- assuming it's a snake
+                    local cutIndex = gameObject:checkCollision(cx, cy)
+                    gameObject:cutAtIndex(cutIndex)
                 end
-                p.go = self
+                p.go[self] = true
                 p.body:setActive(true)
             end
             return true
@@ -70,8 +70,17 @@ function Door:update(dt)
 
             if self.level then
                 p = self.level:getP(cx, cy)
-                p.go = nil
-                p.body:setActive(false)
+                p.go[self] = nil
+                local otherObject = false
+                for gameObject in pairs(p.go) do
+                    if not gameObject.noPhysics then
+                        otherObject = true
+                        break
+                    end
+                end
+                if not otherObject then
+                    p.body:setActive(false)
+                end
             end
             return true
         end

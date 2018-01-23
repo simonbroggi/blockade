@@ -38,7 +38,7 @@ function Snake:setLevel(level)
     for i=1, self:len() do
         local x, y = self.positions[i*2-1], self.positions[i*2]
         local p = self.level:getP(x, y)
-        if p.body:isActive() or p.go then
+        if p.body:isActive() or (p.go and #p.go>0) then
             print("initializing snake over level conflict!!")
         end
         p.go = self
@@ -98,19 +98,23 @@ function Snake:move(grow)
         end
 
         local p = self.level:getP(nextX, nextY)
-        if p.go then
-            if getmetatable(p.go) == FruitManager then
-               print("edible!!")
-               grow = true
-               p.go:spawn()
-               p.go:remove(nextX, nextY)
-            else
-                print("collision!! or is it eatable??")
-                self:die()
-                return
+
+        -- eat eddible stuff
+        for gameObject in pairs(p.go) do
+            if getmetatable(gameObject) == FruitManager then
+                grow = true
+                gameObject:spawn()
+                gameObject:remove(nextX, nextY)
             end
+        end
+        
+        if p.body:isActive() then
+            -- collide with the rest
+            self:die()
+            return
         else
-            p.go = self
+            -- fill the cell
+            p.go[self] = true
             p.body:setActive(true)
         end
     end
@@ -127,9 +131,10 @@ function Snake:move(grow)
     self.lastHeadingX, self.lastHeadingY = self.headingX, self.headingY
 
     if self.level and not grow then
-        local tailP = self.level:getP(self.positions[nextHeadI*2-1], self.positions[nextHeadI*2])
-        tailP.go = nil
-        tailP.body:setActive(false)
+        local p = self.level:getP(self.positions[nextHeadI*2-1], self.positions[nextHeadI*2])
+        p.go[self] = nil
+        -- todo: check if theres another thing in the p.go list and keep body active if yes
+        p.body:setActive(false)
     end
 
     self.positions[nextHeadI*2-1], self.positions[nextHeadI*2] = nextX, nextY

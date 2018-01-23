@@ -25,7 +25,7 @@ function FruitManager:spawn()
     local x = math.random(self.level.width)
     local y = math.random(self.level.height)
     local p = self.level:getP(x,y)
-    while p.body:isActive() do
+    while p.go and #p.go > 0 do
         x = math.random(self.level.width)
         y = math.random(self.level.height)
         p = self.level:getP(x,y)
@@ -33,14 +33,14 @@ function FruitManager:spawn()
     table.insert(self.positions, x)
     table.insert(self.positions, y)
     p.body:setActive(true)
-    p.go = self
+    p.go[self] = true
 end
 
 -- remove from positions list, but not from levels pGrid.
 -- ok because it's removed by a snake that eats it and then takes its position on the pGrid.
 -- not ok if it would be removed by a laser or something else that dosn't override the pGrid pos.
 function FruitManager:remove(x,y)
-    local toRemoveIndex =0
+    local toRemoveIndex = 0
     for i=1, #self.positions, 2 do
         if self.positions[i] == x and self.positions[i+1] == y then
             toRemoveIndex = i
@@ -51,6 +51,9 @@ function FruitManager:remove(x,y)
         table.remove(self.positions, toRemoveIndex)
         table.remove(self.positions, toRemoveIndex)
     end
+    local p = self.level:getP(x,y)
+    p.body:setActive(false)
+    p.go[self] = nil
 end
 
 function FruitManager:update(dt)

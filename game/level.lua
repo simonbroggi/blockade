@@ -94,7 +94,7 @@ function Level:createPGrid()
             p.body = love.physics.newBody(self.world, (x-1)*cellWidth+(cellWidth/2), (y-1)*cellHeight+(cellHeight/2))
             p.shape = love.physics.newRectangleShape(cellWidth, cellHeight)
             p.fixture = love.physics.newFixture(p.body, p.shape)
-            -- p.go : currently the instance (/gameObject) on pGrid.
+            p.go = {} -- instances of 'gameObjects' on the grid
             -- probably needs to be a list to allow multiple gameobjects per cell, needef for switch that are activated when a snake is on it
             p.body:setActive(false)
             self:setP(x, y, p)
