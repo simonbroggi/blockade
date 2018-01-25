@@ -153,6 +153,9 @@ function Laser:draw()
     end
 
     -- set line points. should probably do this in update
+    if #self.segmentList < 1 then
+        return
+    end
     local linePoints = {}
     table.insert(linePoints, self.segmentList[1].startX)
     table.insert(linePoints, self.segmentList[1].startY)
