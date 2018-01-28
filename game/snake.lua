@@ -38,10 +38,16 @@ function Snake:setLevel(level)
     for i=1, self:len() do
         local x, y = self.positions[i*2-1], self.positions[i*2]
         local p = self.level:getP(x, y)
-        if p.body:isActive() or (p.go and #p.go>0) then
+        local numGO = 0
+        if p.go then
+            for _ in pairs(p.go) do
+                numGO = numGO + 1
+            end
+        end
+        if p.body:isActive() or numGO > 0 then
             print("initializing snake over level conflict!!")
         end
-        p.go = self
+        p.go[self] = true
         p.body:setActive(true)
     end
 end

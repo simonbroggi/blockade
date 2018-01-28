@@ -49,7 +49,7 @@ function Level:load(data)
         self.width, self.height = 32, 24
 
         -- physics grid
-        love.physics.setMeter(game.cellWidth)
+        love.physics.setMeter(cellWidth)
         self.world = love.physics.newWorld(0, 0, false)
         self:createPGrid()
 
@@ -83,7 +83,7 @@ function Level:load(data)
         fruitManager:setLevel(self)
         table.insert(self.levelObjects, fruitManager)
 
-        fruitManager:spawn()
+        fruitManager:spawn(15,1)
         fruitManager:spawn()
         fruitManager:spawn()
         fruitManager:spawn()
@@ -97,7 +97,7 @@ end
 -- instead of the static enable disable thing..
 function Level:createPGrid()
     self.pGrid = {}
-    local cellWidth, cellHeight = game.cellWidth, game.cellHeight
+    local cellWidth, cellHeight = cellWidth, cellHeight
     for y=1, self.height do
         for x=1, self.width do
             local p = {}
@@ -105,7 +105,7 @@ function Level:createPGrid()
             p.body = love.physics.newBody(self.world, (x-1)*cellWidth+(cellWidth/2), (y-1)*cellHeight+(cellHeight/2))
             p.shape = love.physics.newRectangleShape(cellWidth, cellHeight)
             p.fixture = love.physics.newFixture(p.body, p.shape)
-            p.go = {} -- instances of 'gameObjects' on the grid
+            p.go = {} -- instances of 'gameObjects' on the grid. p.go[inst]=true
             -- probably needs to be a list to allow multiple gameobjects per cell, needef for switch that are activated when a snake is on it
             p.body:setActive(false)
             self:setP(x, y, p)

@@ -6,9 +6,7 @@ local Game = {}
 function Game:new()
     local inst = {
         snakes = {},
-        pause = false,
-        cellWidth = 16,
-        cellHeight = 16
+        pause = false
     }
     self.__index = self
     setmetatable(inst, self)
@@ -75,17 +73,32 @@ function Game:update(dt)
     if self.level then
         self.level:update(dt)
     end
+    local someLive = false
     for i, s in ipairs(self.snakes) do
         s:update(dt)
+        if not s.dead then
+            someLive = true
+        end
+    end
+
+    if self.timeTilOver then
+        self.timeTilOver = self.timeTilOver - dt
+        if self.timeTilOver <= 0 then
+            self.over = true
+        end
+    else
+        if not someLive then
+            self.timeTilOver = 3
+        end
     end
 end
 
 function Game:draw()
     for i, s in ipairs(self.snakes) do
-        s:draw(self.cellWidth, self.cellHeight)
+        s:draw(cellWidth, cellHeight)
     end
     if self.level then
-        self.level:draw(self.cellWidth, self.cellHeight)
+        self.level:draw(cellWidth, cellHeight)
     end
 end
 

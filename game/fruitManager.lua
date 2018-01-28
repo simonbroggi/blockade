@@ -21,14 +21,26 @@ end
 -- spawn at random location fruit where it's allowed.
 -- don't spawn fruit on walls, snakes etc.
 -- check level:getP(x, y) if there's something there
-function FruitManager:spawn()
-    local x = math.random(self.level.width)
-    local y = math.random(self.level.height)
+function FruitManager:spawn(x,y)
+    x = x or math.random(self.level.width)
+    y = y or math.random(self.level.height)
     local p = self.level:getP(x,y)
-    while p.go and #p.go > 0 do
+    local numGO = 0
+    if p.go then
+        for _ in pairs(p.go) do
+            numGO = numGO + 1
+        end
+    end
+    while p.go and numGO > 0 do
         x = math.random(self.level.width)
         y = math.random(self.level.height)
         p = self.level:getP(x,y)
+        numGO = 0
+        if p.go then
+            for _ in pairs(p.go) do
+                numGO = numGO + 1
+            end
+        end
     end
     table.insert(self.positions, x)
     table.insert(self.positions, y)

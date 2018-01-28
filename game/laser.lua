@@ -82,7 +82,7 @@ function Laser:update(dt)
         end
         
         -- start on the horizontal right and vertical center of the cell
-        local startX,startY = self.x*game.cellWidth ,self.y*game.cellHeight - game.cellHeight/2
+        local startX,startY = self.x*cellWidth ,self.y*cellHeight - cellHeight/2
         self.segmentList[1] = {
             startX=startX,
             startY=startY,
