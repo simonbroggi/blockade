@@ -42,8 +42,15 @@ function Level:load(data)
     -- clean up the level
     self.levelObjects = {}
 
-    if data then
+    if true then
         -- todo
+        -- create a default test level
+        self.width, self.height = 32, 24
+
+        -- physics grid
+        love.physics.setMeter(cellWidth)
+        self.world = love.physics.newWorld(0, 0, false)
+        self:createPGrid()
     else
         -- create a default test level
         self.width, self.height = 32, 24
@@ -111,7 +118,7 @@ function Level:createPGrid()
             self:setP(x, y, p)
         end
     end
-    print("world with " .. self.world:getBodyCount() .. " bodies created") --to much? probably
+    -- print("world with " .. self.world:getBodyCount() .. " bodies created") --to much? probably
 end
 
 function Level:getP(x, y)

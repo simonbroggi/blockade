@@ -18,7 +18,7 @@ function Game:loadSinglePlayer()
     level:load()
     self:setLevel(level)
 
-    self.player1 = Snake:new(9,10,5)
+    self.player1 = Snake:new(9,10,10)
     self.player1.colorR = 180
     self.player1.colorG = 255
     self.player1.colorB = 255
@@ -29,6 +29,9 @@ function Game:loadSinglePlayer()
     input.p1_down:register( self.player1.steerDown,  self.player1)
     input.p1_left:register( self.player1.steerLeft,  self.player1)
     input.p1_right:register(self.player1.steerRight, self.player1)
+
+    -- print("load")
+    -- input.p1_up:printFuncs()
 end
 
 function Game:unloadSinglePlayer()
@@ -37,6 +40,8 @@ function Game:unloadSinglePlayer()
     input.p1_left:remove( self.player1.steerLeft,  self.player1)
     input.p1_right:remove(self.player1.steerRight, self.player1)
 
+    -- print("unload")
+    -- input.p1_up:printFuncs()
     -- todo: player1:unsetLevel ?
     -- todo: remove player1 from snakes
 end

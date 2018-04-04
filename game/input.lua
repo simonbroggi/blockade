@@ -22,6 +22,12 @@ if isModuleAvailable('periphery') then
 end
 
 input.bindingsPerKey = {}
+local function printFuncs(self)
+    print(self.key)
+    for k,v in pairs(self.funcs) do
+        print("  " .. tostring(k) .. tostring(v))
+    end
+end
 local function register(self, func, caller)
     if not self.funcs[func] then
         self.funcs[func] = {}
@@ -46,10 +52,13 @@ local function remove(self, func, caller)
     if count == 0 then
         self.funcs[func] = nil
     end
+
     --self.funcs[func] = nil
 end
 local function emit(self)
+    -- print("emitting " .. self.key)
     for func, l in pairs(self.funcs) do
+        -- print("  f:" .. tostring(func))
         for caller, b in pairs(l) do
             if b then
                 if caller == func then
@@ -81,10 +90,11 @@ local function newBinding(key_str, gpio_pin)
         b.gpio = GPIO(gpio_pin, "in")
         --b.edge = "falling"
     end
-    b.funcs = {}
+    b.funcs = {} --setmetatable({}, {__mode = "k"})
     b.register = register
     b.remove = remove
     b.emit = emit
+    b.printFuncs = printFuncs
 
     b.pressed = false
     if input.bindingsPerKey[key_str] then

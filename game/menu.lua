@@ -34,7 +34,6 @@ function Menu:unload()
     input.p2_up:remove(      self.up,    self)
     input.p2_down:remove(    self.down,  self)
     input.p2_button1:remove( self.select,self)
-    self.funcs = {}
 end
 
 function Menu:up()
@@ -48,6 +47,7 @@ function Menu:down()
     end
 end
 function Menu:select()
+    print("select!")
     if self.funcs[self.activ] then
         self.funcs[self.activ]()
     end
