@@ -89,7 +89,7 @@ function Door:update(dt)
 end
 
 function Door:draw(cellWidth, cellHeight)
-    love.graphics.setColor(170, 170, 0, 255)
+    love.graphics.setColor(0.666, 0.666, 0, 1)
     local x,y = self.x, self.y
     for i=1, self.currentLen do
         love.graphics.rectangle("fill", x * cellWidth-1, y * cellHeight-1, 2-cellWidth, 2-cellHeight)

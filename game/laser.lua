@@ -59,7 +59,7 @@ function Laser:loadParticleSystems()
         ps:setSpeed(60,170)
         ps:setSpread(math.pi*0.8)
         ps:setSizes(3,3,3,3)
-        ps:setColors(255,255,255,255, 255,255,255,255, 255,255,255,255, 255,255,255,0) -- Fade to transparency.
+        ps:setColors(1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,0) -- Fade to transparency.
         ps:stop()
         self.particleSystems[i] = ps
     end
@@ -147,7 +147,7 @@ end
 function Laser:draw()
     -- draw it according to points found in update
     love.graphics.setBlendMode("add")
-    love.graphics.setColor(200,0,0,255)
+    love.graphics.setColor(0.784,0,0,1)
     for i,p in ipairs(self.particleSystems) do
         love.graphics.draw(p)
     end
@@ -169,12 +169,12 @@ function Laser:draw()
     -- love.graphics.setShader(self.lineShader)
     love.graphics.setLineJoin("bevel")
     love.graphics.setLineWidth(13)
-    love.graphics.setColor(80,0,0,255)
+    love.graphics.setColor(0.313,0,0,1)
     love.graphics.line(unpack(linePoints))
     -- love.graphics.setShader(s)
 
     love.graphics.setLineWidth(1)
-    love.graphics.setColor(155,0,0,255)
+    love.graphics.setColor(0.607,0,0,1)
     love.graphics.line(unpack(linePoints))    
 end
 

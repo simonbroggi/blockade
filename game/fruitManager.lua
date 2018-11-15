@@ -73,7 +73,7 @@ function FruitManager:update(dt)
 end
 
 function FruitManager:draw(cellWidth, cellHeight)
-    love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.setColor(0, 1, 0, 1)
     for i=1, #self.positions, 2 do
         love.graphics.rectangle("fill", self.positions[i] * cellWidth-1, self.positions[i+1] * cellHeight-1, 2-cellWidth, 2-cellHeight)
     end

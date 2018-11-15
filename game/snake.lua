@@ -19,10 +19,10 @@ function Snake:new(x, y, len)
         foodEaten = false,
         moved = false, -- true if the snake has moved this frame
         dead = false,
-        colorR = 222,
-        colorG = 222,
-        colorB = 222,
-        colorA = 255,
+        colorR = 0.87,
+        colorG = 0.87,
+        colorB = 0.87,
+        colorA = 1,
         positions = {} -- odd:x even:y
     }
     self.__index = self

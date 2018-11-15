@@ -36,7 +36,7 @@ function Switch:update(dt)
 end
 
 function Switch:draw(cellWidth, cellHeight)
-    love.graphics.setColor(122, 115, 56, 255)
+    love.graphics.setColor(0.478, 0.45, 0.219, 1)
     love.graphics.rectangle("fill", self.x * cellWidth-1, self.y * cellHeight-1, 2-cellWidth, 2-cellHeight)
 end
 

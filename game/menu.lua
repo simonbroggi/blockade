@@ -62,9 +62,9 @@ function Menu:draw()
     local yStep = love.graphics.getHeight() / 2 / #self.items
     for _, item in ipairs(self.items) do
         if i == self.activ then
-            love.graphics.setColor(255, 255, 255, 255)
+            love.graphics.setColor(1, 1, 1, 1)
         else
-            love.graphics.setColor(111, 111, 111, 255)
+            love.graphics.setColor(0.5, 0.5, 0.5, 1)
         end
         love.graphics.print(item, x, y);
         i = i+1
